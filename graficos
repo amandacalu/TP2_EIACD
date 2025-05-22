@@ -1,0 +1,165 @@
+## 1.3 - Data Exploration
+
+In this section, we explore the original dataset before preprocessing. The goal is to understand the structure of the data, the distribution of features, and identify potential issues such as imbalance, outliers, or irrelevant features. This is done using descriptive statistics and a set of visualizations.
+
+---
+
+### 1.3.1 - Dataset Overview
+
+We begin by checking the structure of the dataset, including number of features, types, and basic statistics.
+
+```python
+print("Dataset shape:", sd.shape)
+sd.info()
+sd.describe(include='all')
+```
+
+---
+
+### 1.3.2 - Distribution of the Target Variable
+
+We check how balanced the target variable `passed` is.
+
+```python
+sns.countplot(x="passed", data=sd)
+plt.title("Distribution of Target Variable: passed")
+plt.xlabel("Passed")
+plt.ylabel("Number of Students")
+plt.show()
+```
+
+---
+
+### 1.3.3 - Class Distribution by School
+
+We compare the number of students who passed and failed by school.
+
+```python
+sns.countplot(x="school", hue="passed", data=sd)
+plt.title("Class Distribution by School")
+plt.xlabel("School")
+plt.ylabel("Number of Students")
+plt.show()
+```
+
+---
+
+### 1.3.4 - Distribution of Numeric Features
+
+We use histograms to understand the shape of numeric features.
+
+```python
+numeric_cols = sd.select_dtypes(include=['int64', 'float64']).columns
+
+plt.figure(figsize=(15, 10))
+for i, col in enumerate(numeric_cols, 1):
+    plt.subplot(4, 4, i)
+    sns.histplot(sd[col], kde=True, bins=20)
+    plt.title(f'Distribution of {col}')
+    plt.tight_layout()
+```
+
+---
+
+### 1.3.5 - Frequency of Categorical Features
+
+We count the occurrences of each category for all categorical variables.
+
+```python
+categorical_cols = sd.select_dtypes(include='object').columns
+
+plt.figure(figsize=(15, 20))
+for i, col in enumerate(categorical_cols, 1):
+    plt.subplot(6, 3, i)
+    sns.countplot(data=sd, x=col)
+    plt.xticks(rotation=45)
+    plt.title(f'Count of {col}')
+    plt.tight_layout()
+```
+
+---
+
+### 1.3.6 - Correlation Between Numeric Features
+
+We use a heatmap to examine correlations among numeric features.
+
+```python
+plt.figure(figsize=(14, 10))
+sns.heatmap(sd.corr(numeric_only=True), annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Correlation Heatmap")
+plt.show()
+```
+
+---
+
+### 1.3.7 - Numeric Features vs Target (Boxplots)
+
+We visualize how numeric features vary between students who passed and failed.
+
+```python
+plt.figure(figsize=(15, 10))
+for i, col in enumerate(numeric_cols, 1):
+    plt.subplot(4, 4, i)
+    sns.boxplot(x='passed', y=col, data=sd)
+    plt.title(f'{col} vs passed')
+    plt.tight_layout()
+```
+
+---
+
+### 1.3.8 - Additional Relevant Relationships
+
+#### Pass Rate by Gender
+
+```python
+sns.countplot(x="sex", hue="passed", data=sd)
+plt.title("Pass Rate by Gender")
+plt.xlabel("Gender")
+plt.ylabel("Number of Students")
+plt.show()
+```
+
+#### Pass Rate by Address Type
+
+```python
+sns.countplot(x="address", hue="passed", data=sd)
+plt.title("Pass Rate by Address Type")
+plt.xlabel("Address")
+plt.ylabel("Number of Students")
+plt.show()
+```
+
+#### Mother's Education vs Passed
+
+```python
+sns.boxplot(x="passed", y="Medu", data=sd)
+plt.title("Mother's Education vs Passed")
+plt.show()
+```
+
+#### Father's Education vs Passed
+
+```python
+sns.boxplot(x="passed", y="Fedu", data=sd)
+plt.title("Father's Education vs Passed")
+plt.show()
+```
+
+#### Alcohol Consumption vs Passed
+
+```python
+sns.boxplot(x="passed", y="Dalc", data=sd)
+plt.title("Workday Alcohol Consumption vs Passed")
+plt.show()
+
+sns.boxplot(x="passed", y="Walc", data=sd)
+plt.title("Weekend Alcohol Consumption vs Passed")
+plt.show()
+```
+
+#### Study Time vs Passed
+
+```python
+sns.boxplot(x="passed", y="studytime", data=sd)
+plt.title("Study Time vs Passed")
+plt.show()
